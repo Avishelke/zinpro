@@ -1,0 +1,104 @@
+<html>
+
+<head>
+    <link href="./css/jquery.jexcel.css" rel="stylesheet">
+
+    <style>
+        jexcel > tbody > tr > td
+{
+    text-align: left;
+    border-left:1px solid transparent;
+    border-right:1px solid #ccc;
+    border-top:1px solid transparent;
+    border-bottom:1px solid #ccc;
+    padding:4px;
+    overflow:hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-left:  100px;
+}
+            </style>
+</head>
+
+<body>
+
+
+    <div id="table" style="width:100%">
+
+    </div>
+
+    <br />
+    <br />
+
+    <input type="button" class="button" value="SAVE VALUE">
+
+    <script src="./js/jquery.js"></script>
+    <script src="./js/jquery.jexcel.js"></script>
+    <script src="./js/excel-formula.min.js"></script>
+    <script>jQuery(function ($) {
+
+
+            document.addEventListener("message", function (d) {
+                var data = JSON.parse(d.data)
+                $('#table').jexcel({
+                    data: data,
+                    colHeaders: ['PARAMETERS', 'PERIOD 1', 'PERIOD 2', 'PERIOD 3', 'PERIOD 4'],
+                    colWidths: [350, 100, 100, 100, 100],
+                    columns: [
+                        { type: 'text', readOnly: true },
+                        { type: 'text' },
+                        { type: 'text' },
+                        { type: 'text' },
+                        { type: 'text' },
+                    ],
+                    allowInsertRow: false,
+                    allowInsertColumn: false,
+                });
+
+                $('#table').jexcel('updateSettings', {
+                    cells: function (cell, col, row) {
+                        // If the column is number 4 or 5
+
+                        if (['4', '11', '20'].indexOf(row) > -1) {
+                            $(cell).addClass('readonly');
+                        }
+                    }
+                });
+
+
+                // Keep a small delay
+                setTimeout(function () {
+                    var html = '<tr>' +
+                        '<td class="jexcel_label" width="30"></td>' +
+                        '<td width="250" align="center"></td>' +
+                        '<td colspan="2" width="200" align="center">NO AV SHOW</td>' +
+                        '<td colspan="2" width="200" align="center">WITH AV SHOW</td>' +
+                        '</tr>';
+
+                    $('#table').find('thead').prepend(html);
+                }, 500);
+
+            });
+
+
+            $('.button').on('click', function () {
+                window.postMessage(JSON.stringify($('#table').jexcel('getData')));
+            });
+
+        });
+        
+        </script>
+
+</body>
+
+</html>

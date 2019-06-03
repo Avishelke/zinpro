@@ -1,0 +1,136 @@
+<html>
+
+<head>
+    <link href="./css/jquery.jexcel.css" rel="stylesheet">
+
+    <style>
+        jexcel > tbody > tr > td
+{
+    text-align: left;
+    border-left:1px solid transparent;
+    border-right:1px solid #ccc;
+    border-top:1px solid transparent;
+    border-bottom:1px solid #ccc;
+    padding:4px;
+    overflow:hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-left:  100px;
+}
+            </style>
+</head>
+
+<body>
+
+
+    <div id="table" style="width:100%">
+
+    </div>
+
+    <br />
+    <br />
+
+    <input type="button" class="button" value="Submit">
+
+    <script src="./js/numeral.js"></script>
+
+    <script src="./js/jquery.js"></script>
+    <script src="./js/jquery.jexcel.js"></script>
+    <script src="./js/excel-formula.min.js"></script>
+    <script>
+
+
+        document.addEventListener("message", function (d) {
+            var data = JSON.parse(d.data);
+            
+            $('#table').jexcel({
+                data: data,
+                colHeaders: ['FEED NAME', 'CONSUMPTION', 'COST/Kg', 'TOTAL', ' ', '  '],
+                colWidths: [250, 100, 60, 80, 80, 80],
+                columns: [
+                    { type: 'text' },
+                    { type: 'text' },
+                    { type: 'text' },
+                    { type: 'text' },
+                    { type: 'text' },
+                    { type: 'text' },
+                    { type: 'text' },
+                ],
+                allowInsertRow: false,
+                allowInsertColumn: false,
+            });
+
+            $('#table').jexcel('updateSettings', {
+                table: function (instance, cell, col, row, val, id) {
+
+                    var allowed = ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D11', 'D12', 'E11', 'E12', 'C20', 'D23', 'D29',
+                        'D36', 'D38',
+                        'B43', 'C43', 'D43', 'E43', 'F43',
+                        'B44', 'C44', 'D44', 'E44', 'F44',
+                        'B45', 'C45', 'D45', 'E45', 'F45',
+                        'B46', 'C46', 'D46', 'E46', 'F46',
+                        'B47', 'C47', 'D47', 'E47', 'F47',
+                        'B48', 'C48', 'D48', 'E48', 'F48',
+                        'B49', 'C49', 'D49', 'E49', 'F49'
+                    ];
+
+                    if (allowed.indexOf(id) > -1) {
+                        txt = $(cell).text();
+                        // Format text
+                        txt = numeral(txt).format('0,0.00');
+                        // Update cell value
+                        $(cell).html(txt);
+                    }
+
+                    var intallowed = ['B51', 'C51', 'D51', 'E51', 'F51'];
+
+                    if (intallowed.indexOf(id) > -1) {
+                        txt = $(cell).text();
+                        // Format text
+                        txt = numeral(txt).format('0,0');
+                        // Update cell value
+                        $(cell).html(txt);
+                    }
+
+                    var editable =
+                        [
+                            'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B23',
+                            'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C11', 'C12', 'C15', 'C17', 'C18', 'C23',
+                            'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C11', 'C12', 'C15', 'C17', 'C18', 'C23',
+                            'D23', 'D25', 'D27', 'D28', 'D33', 'D34', 'D35',
+                            'D23', 'D25', 'D27', 'D28', 'D33', 'D34', 'D35'
+                        ];
+
+                    if (editable.indexOf(id) == -1) {
+                        $(cell).addClass('');
+                    }
+                }
+            });
+
+
+        });
+
+
+        $('.button').on('click', function () {
+            window.postMessage(JSON.stringify($('#table').jexcel('getData')));
+        });
+
+    </script>
+
+
+
+
+
+</body>
+
+</html>
