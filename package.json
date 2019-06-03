@@ -1,0 +1,40 @@
+{
+  "name": "ZeproFeetFirst",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "react": "16.6.3",
+    "react-native": "0.57.8",
+    "react-native-actionsheet": "^2.4.2",
+    "react-native-cards-slider": "^0.1.2",
+    "react-native-datepicker": "^1.7.2",
+    "react-native-elements": "^1.1.0",
+    "react-native-fs": "^2.13.3",
+    "react-native-highcharts": "^1.0.2",
+    "react-native-html-to-pdf": "^0.6.0",
+    "react-native-image-crop-picker": "^0.20.3",
+    "react-native-keyboard-aware-scroll-view": "^0.8.0",
+    "react-native-loading-spinner-overlay": "^1.0.1",
+    "react-native-pdf": "^5.0.11",
+    "react-native-splash-screen": "^3.2.0",
+    "react-native-sqlite-storage": "^3.3.9",
+    "react-native-table-component": "^1.2.0",
+    "react-native-toaster": "^1.2.2",
+    "react-native-vector-icons": "^6.1.0",
+    "react-navigation": "2.8.0",
+    "react-redux": "^6.0.0",
+    "redux": "^4.0.1",
+    "redux-array": "^1.0.1",
+    "rn-fetch-blob": "^0.10.15",
+    "yarn": "^1.13.0"
+  },
+  "devDependencies": {
+    "babel-jest": "23.6.0",
+    "metro-react-native-babel-preset": "0.51.1",
+    "react-test-renderer": "16.6.3"
+  }
+}
