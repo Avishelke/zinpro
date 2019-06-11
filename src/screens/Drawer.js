@@ -34,24 +34,24 @@ class Drawer extends Component {
       this.props.navigation.navigate('Login');
     });
     //   AsyncStorage.removeItem(LOGIN_TOKEN).then(() => {
-    //     db.transaction((tx) => {
-    //       tx.executeSql(`delete from claw_collection`),
-    //       tx.executeSql(`delete from cull_data`),
-    //       tx.executeSql(`delete from evaluations`),
-    //       tx.executeSql(`delete from evaluations_groups`),
-    //       tx.executeSql(`delete from farms`),
-    //       tx.executeSql(`delete from field_sheet`),
-    //       tx.executeSql(`delete from gestation_assessor`),
-    //       tx.executeSql(`delete from gilt_assessor`),
-    //       tx.executeSql(`delete from gilt_break_even`),
-    //       tx.executeSql(`delete from groups`),
-    //       tx.executeSql(`delete from herd_census`),
-    //       tx.executeSql(`delete from insemination_assessor`),
-    //       tx.executeSql(`delete from evaluations_groups`),
-    //       tx.executeSql(`DELETE FROM sqlite_sequence`)
-    //   }, 
-    //   () => {}, 
-    //   () => {this.props.navigation.navigate('Login')})
+        db.transaction((tx) => {
+          tx.executeSql(`delete from claw_collection`),
+          tx.executeSql(`delete from cull_data`),
+          tx.executeSql(`delete from evaluations`),
+          tx.executeSql(`delete from evaluations_groups`),
+          tx.executeSql(`delete from farms`),
+          tx.executeSql(`delete from field_sheet`),
+          tx.executeSql(`delete from gestation_assessor`),
+          tx.executeSql(`delete from gilt_assessor`),
+          tx.executeSql(`delete from gilt_break_even`),
+          tx.executeSql(`delete from groups`),
+          tx.executeSql(`delete from herd_census`),
+          tx.executeSql(`delete from insemination_assessor`),
+          tx.executeSql(`delete from evaluations_groups`),
+          tx.executeSql(`DELETE FROM sqlite_sequence`)
+      }, 
+      () => {}, 
+      () => {this.props.navigation.navigate('Login')})
     // })
   }
 

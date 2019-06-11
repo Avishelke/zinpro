@@ -3,10 +3,11 @@ import { ScrollView, View, StyleSheet, Text, Image } from "../../../components/c
 import { THEME_COLOR } from "../../../helpers/theme";
 import ChartView from 'react-native-highcharts';
 import { db } from '../../../helpers/db'
-
+import RNFetchBlob from 'rn-fetch-blob';
+import Button from '../../../components/Button';
 
 class Gilt extends Component {
-
+    evaluationId;
     state = {
         date: '',
         evaluation_id: '',
@@ -18,15 +19,16 @@ class Gilt extends Component {
     };
 
     componentDidMount() {
-        let id = this.props.navigation.getParam('id')
+        let id = this.props.navigation.getParam('id');
+        this.evaluationId = this.props.navigation.getParam('evaluatinId');
         db.transaction((tx) => {
-            tx.executeSql(`select * from  cull_data where id=?`, [id], (tx, results) => {
+            tx.executeSql(`select * from  cull_data where evaluation_group_id=?`, [this.evaluationId], (tx, results) => {
 
                 if (results.rows.length > 0) {
                     let row = results.rows.raw()[0];
 
                     let json = JSON.parse(row.data);
-                    console.log("results.rows.length::::::::::::", json);
+                    // console.log("results.rows.length::::::::::::", json);
 
                     let series = [{
                         name: 'Ideal Zone',
@@ -63,6 +65,37 @@ class Gilt extends Component {
             })
         })
     }
+
+    downloadReport = () => {
+        RNFetchBlob.config({
+            fileCache: true,
+            addAndroidDownloads: {
+                notification: true,
+                useDownloadManager: true,
+                // Title of download notification
+                title: 'cull data graph',
+                // File description (not notification description)
+                description: 'Graph report',
+                mime: 'application/pdf',
+                // Make the file scannable  by media scanner
+                mediaScannable: true,
+            }
+
+        })
+            .fetch('GET', "http://taskgrids.com/zinpro/cull-data/report?evaluation_group_id=" + this.evaluationId)
+            .then((res) => {
+                Alert.alert(
+                    'File Status',
+                    'PDF Download Successfully',
+                    [
+                        { text: 'OK', onPress: () => { } },
+                    ],
+                    { cancelable: false },
+                );
+            })
+    }
+
+
     render() {
 
         const conf = {
@@ -114,9 +147,12 @@ class Gilt extends Component {
         return (
             <ScrollView style={container}>
 
-
-
-                {this.state.length > 0 && <ChartView style={{ height: 400 }} config={conf} />}
+                {this.state.length > 0 &&
+                    <View>
+                        <ChartView style={{ height: 400 }} config={conf} />
+                        <Button text={"Download"} onPress={this.downloadReport} />
+                    </View>
+                }
                 {this.state.length === 0 && <View style={{ marginTop: 100, marginHorizontal: '5%' }}>
                     <Text style={{ textAlign: 'center' }}>No Data Found !!</Text>
                 </View>}

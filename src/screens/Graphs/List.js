@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { StyleSheet, View, ScrollView } from "../../components/core";
-
+import { StyleSheet, View, ScrollView, Picker, ToastAndroid } from "../../components/core";
+import { db } from '../../helpers/db';
 import AssessorsItem from "../../components/AssessorsItem";
 
 class List extends Component {
@@ -17,22 +17,53 @@ class List extends Component {
     { image: 'userguide', 'url': 'FeetFirst_UserGuide.pdf', label: 'ClawGraph', _label: 'Claw Graph', icon: 'ic_claw_graph' },
   ];
 
+  state = {
+    evaluationList: [],
+    evaluationId: ''
+  }
+
+  componentDidMount() {
+    db.transaction((tx) => {
+      tx.executeSql('select * from evaluations where is_active=?', [1], (tx, results) => {
+        // console.log("results.rows.raw()::::::", results.rows.raw());
+        this.setState({ evaluationList: results.rows.raw() })
+      })
+    })
+  }
 
   navigateAssessorScreen = (route) => {
-    this.props.navigation.navigate(route, { type: route });
+    if (this.state.evaluationId) {
+      this.props.navigation.navigate(route, { type: route, evaluatinId: this.state.evaluationId });
+    } else {
+      ToastAndroid.show('Please select evaluation', ToastAndroid.SHORT);
+    }
+  }
+
+  renderPicker = (label, value) => {
+    let key = Math.random();
+    return <Picker.Item label={label} value={value} key={key} />
   }
 
   render() {
     return (
       <View style={styles.container}>
         <ScrollView style={{ marginBottom: '10%' }}>
+          <Picker
+            selectedValue={this.state.evaluationId}
+            prompt={""}
+            style={[styles.inputbox, { height: 50, width: '80%', marginLeft: '10%' }]}
+            onValueChange={(itemValue, itemIndex) => { this.setState({ evaluationId: itemValue }) }}
+          >
+            {this.renderPicker("Select Evaluation", "")}
+            {this.state.evaluationList.map((item, key) => this.renderPicker(item.first_name + ' ' + item.last_name, item.id))}
+          </Picker>
           <View style={styles.listcontaner}>
             {
               this.assessors.map((info, key) => <AssessorsItem
                 onPress={this.navigateAssessorScreen}
                 key={key}
-               label={info.label}
-                  _label={info._label}
+                label={info.label}
+                _label={info._label}
                 icon={info.icon} />)
             }
           </View>
@@ -52,6 +83,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
+  },
+  inputbox: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginVertical: 10,
+    borderBottomWidth: 1
   }
 });
 

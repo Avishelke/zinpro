@@ -29,10 +29,10 @@ export default (props) => {
     });
 
     const { row, leftblock, fieldnametext, grouptext } = EvaluationItemStyle;
-    const { name, date, id, group_name, farm_name } = props.item;
+    const { name, date, id, group_name, farm_name, evaluatinId } = props.item;
 
     return <View style={row}>
-        <TouchableHighlight underlayColor={"white"} onPress={() => { props.onPressDetail(id) }} style={leftblock}>
+        <TouchableHighlight underlayColor={"white"} onPress={() => { props.onPressDetail(id, evaluatinId) }} style={leftblock}>
             <View >
                 <Text style={fieldnametext}>{name}</Text>
                 <Text style={grouptext}>Date - {date}</Text>

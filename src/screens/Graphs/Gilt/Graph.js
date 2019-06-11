@@ -1,12 +1,15 @@
 import React, { Component } from "react";
-import { ScrollView, View, StyleSheet, Text , Image} from "./../../../components/core";
+import { ScrollView, View, StyleSheet, Text, Image } from "./../../../components/core";
 import { THEME_COLOR } from "./../../../helpers/theme";
-import { db } from '../../../helpers/db'
+import { db } from '../../../helpers/db';
+
 import ChartView from 'react-native-highcharts';
 import CardSilder from 'react-native-cards-slider';
+import RNFetchBlob from 'rn-fetch-blob';
+import Button from '../../../components/Button';
 
 class Gilt extends Component {
-
+    evaluationId;
     state = {
         date: '',
         evaluation_id: '',
@@ -14,35 +17,72 @@ class Gilt extends Component {
         open: false,
         length: false,
         graphdata: [],
-        images: []
+        images: [],
+        comments: []
     };
 
     componentDidMount() {
-        let id = this.props.navigation.getParam('id')
+        let id = this.props.navigation.getParam('id');
+        this.evaluationId = this.props.navigation.getParam('evaluatinId');
+
         db.transaction((tx) => {
-            tx.executeSql(`select * from  gilt_assessor where id=?`, [id], (tx, results) => {
+            tx.executeSql(`select * from  gilt_assessor where evaluation_group_id=?`, [this.evaluationId], (tx, results) => {
 
                 if (results.rows.length > 0) {
                     let row = results.rows.raw()[0];
                     let images = [];
+                    let comments = [];
                     const { floor, ventilation, feeders, feed, hygiene, person_contact, gilt_growth, quarentine } = row;
-                    
+
                     Object.keys(row).map((key) => {
-                        if(key.includes('_image') && row[key]){
+                        if (key.includes('_image') && row[key]) {
                             images.push(row[key]);
+                        }
+                        if (key.includes('_comments') && row[key]) {
+                            comments.push(row[key]);
                         }
                     });
 
-                    this.setState({ 
-                        length: 1, 
+                    this.setState({
+                        length: 1,
                         graphdata: [floor, ventilation, feeders, feed, hygiene, person_contact, gilt_growth, quarentine],
-                        images: images 
+                        images: images,
+                        comments: comments
                     });
                 } else {
                     this.setState({ length: 0 });
                 }
             })
         })
+    }
+
+    downloadReport = () => {
+        RNFetchBlob.config({
+            fileCache: true,
+            addAndroidDownloads: {
+                notification: true,
+                useDownloadManager: true,
+                // Title of download notification
+                title: 'gilt-assessor graph',
+                // File description (not notification description)
+                description: 'Graph report',
+                mime: 'application/pdf',
+                // Make the file scannable  by media scanner
+                mediaScannable: true,
+            }
+
+        })
+            .fetch('GET', "http://taskgrids.com/zinpro/gilt-assessor/report?evaluation_group_id=" + this.evaluationId)
+            .then((res) => {
+                Alert.alert(
+                    'File Status',
+                    'PDF Download Successfully',
+                    [
+                        { text: 'OK', onPress: () => { } },
+                    ],
+                    { cancelable: false },
+                );
+            })
     }
 
 
@@ -55,11 +95,11 @@ class Gilt extends Component {
             exporting: { enabled: false },
             chart: {
                 type: 'spline',
-                
+
             },
             title: {
                 text: 'GILT ASSESSORS',
-                color:'red'
+                color: 'red'
             },
             xAxis: {
                 categories: ['FLOOR', 'VENTILATION', 'FEEDERS', 'FEED', 'HYGIENE', 'PERSON CONTACT', 'GILT GROWTH', 'QUARANTINE']
@@ -72,16 +112,14 @@ class Gilt extends Component {
                     formatter: function () {
                         return this.value;
                     }
-                    
                 }
-                
             },
-         
+
             chart: {
-    //   polar: true,
-    //   type: 'line',
-      backgroundColor:'white' 
-},
+                //   polar: true,
+                //   type: 'line',
+                backgroundColor: 'white'
+            },
             tooltip: {
                 crosshairs: true,
                 shared: true
@@ -106,12 +144,10 @@ class Gilt extends Component {
             }]
         };
 
-        const { container, labelText} = styles;
+        const { container, labelText } = styles;
 
         return (
             <ScrollView style={container}>
-
-
 
                 {this.state.length > 0 && <ChartView style={{ height: 300, }} config={conf} />}
                 {this.state.length === 0 && <View style={{ marginTop: 100, marginHorizontal: '5%' }}>
@@ -119,15 +155,22 @@ class Gilt extends Component {
                 </View>}
 
                 <CardSilder>
-                    {this.state.images.map((i, k,v) => {
-                        return <View key={k}>                             
-                            <Image style={{height: 170}} source={{uri : i}} key={k} />
-                            {/* <Text>Test</Text> */}
-                             </View>
-                    })}  
+                    {this.state.images.map((i, k, v) => {
+                        return <View key={k}>
+                            <Image style={{ height: 170 }} source={{ uri: i }} key={k} />
+                        </View>
+                    })}
+                </CardSilder>
 
-                        
-                 </CardSilder>
+                <CardSilder>
+                    {this.state.comments.map((i, k, v) => {
+                        return <View key={k}>
+                            <Text style={{ textAlign: 'center', padding: 30 }}>{i}</Text>
+                        </View>
+                    })}
+                </CardSilder>
+
+                <Button text={"Download"} onPress={this.downloadReport} />
 
             </ScrollView>
         );

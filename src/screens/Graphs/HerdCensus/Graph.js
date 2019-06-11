@@ -4,8 +4,11 @@ import { THEME_COLOR } from "../../../helpers/theme";
 import ChartView from 'react-native-highcharts';
 import { db } from '../../../helpers/db'
 
+import RNFetchBlob from 'rn-fetch-blob';
+import Button from '../../../components/Button';
 
 class Gilt extends Component {
+    evaluationId;
 
     state = {
         date: '',
@@ -18,9 +21,11 @@ class Gilt extends Component {
     };
 
     componentDidMount() {
-        let id = this.props.navigation.getParam('id')
+        let id = this.props.navigation.getParam('id');
+        this.evaluationId = this.props.navigation.getParam('evaluatinId');
+
         db.transaction((tx) => {
-            tx.executeSql(`select * from  herd_census where id=?`, [id], (tx, results) => {
+            tx.executeSql(`select * from  herd_census where evaluation_group_id=?`, [this.evaluationId], (tx, results) => {
 
                 if (results.rows.length > 0) {
                     let row = results.rows.raw()[0];
@@ -31,8 +36,8 @@ class Gilt extends Component {
                         name: 'Ideal Zone',
                         data: []
 
-                    }, {name: json[0][2],data: []}, 
-                    {name: json[0][3],data: []}, {
+                    }, { name: json[0][2], data: [] },
+                    { name: json[0][3], data: [] }, {
                         name: json[0][4],
                         data: []
 
@@ -53,13 +58,44 @@ class Gilt extends Component {
                     }
 
                     console.log(series);
-                    this.setState({ length: 1, series});
+                    this.setState({ length: 1, series });
                 } else {
                     this.setState({ length: 0 });
                 }
             })
         })
     }
+
+    downloadReport = () => {
+        RNFetchBlob.config({
+            fileCache: true,
+            addAndroidDownloads: {
+                notification: true,
+                useDownloadManager: true,
+                // Title of download notification
+                title: 'herd_census graph',
+                // File description (not notification description)
+                description: 'Graph report',
+                mime: 'application/pdf',
+                // Make the file scannable  by media scanner
+                mediaScannable: true,
+            }
+
+        })
+            .fetch('GET', "http://taskgrids.com/zinpro/herd-census/report?evaluation_group_id=" + this.evaluationId)
+            .then((res) => {
+                Alert.alert(
+                    'File Status',
+                    'PDF Download Successfully',
+                    [
+                        { text: 'OK', onPress: () => { } },
+                    ],
+                    { cancelable: false },
+                );
+            })
+    }
+
+
     render() {
 
         const conf = {
@@ -111,9 +147,12 @@ class Gilt extends Component {
         return (
             <ScrollView style={container}>
 
-
-
-                {this.state.length > 0 && <ChartView style={{ height: 400 }} config={conf} />}
+                {this.state.length > 0 &&
+                    <View>
+                        <ChartView style={{ height: 400 }} config={conf} />
+                        <Button text={"Download"} onPress={this.downloadReport} />
+                    </View>
+                }
                 {this.state.length === 0 && <View style={{ marginTop: 100, marginHorizontal: '5%' }}>
                     <Text style={{ textAlign: 'center' }}>No Data Found !!</Text>
                 </View>}

@@ -1,12 +1,14 @@
 import React, { Component } from "react";
-import { ScrollView, View, StyleSheet, Text , Image} from "./../../../components/core";
+import { ScrollView, View, StyleSheet, Text, Image } from "./../../../components/core";
 import { THEME_COLOR } from "./../../../helpers/theme";
 import { db } from '../../../helpers/db'
 import ChartView from 'react-native-highcharts';
 import CardSilder from 'react-native-cards-slider';
+import RNFetchBlob from 'rn-fetch-blob';
+import Button from '../../../components/Button';
 
 class Gilt extends Component {
-
+    evaluationId;
     state = {
         date: '',
         evaluation_id: '',
@@ -14,30 +16,37 @@ class Gilt extends Component {
         open: false,
         length: false,
         graphdata: [],
-        images: []
+        images: [],
+        comments: []
     };
 
     componentDidMount() {
         let gilt_id = this.props.navigation.getParam('id')
+        this.evaluationId = this.props.navigation.getParam('evaluatinId');
 
         db.transaction((tx) => {
-            tx.executeSql(`select * from  gestation_assessor where id=?`, [gilt_id], (tx, results) => {
+            tx.executeSql(`select * from  gestation_assessor where evaluation_group_id=?`, [this.evaluationId], (tx, results) => {
 
                 if (results.rows.length > 0) {
                     let row = results.rows.raw()[0];
                     let images = [];
-                    const {body_score_entry,fight_signs,air,temperature,floor ,rest_areas ,feed ,management} = results.rows.raw()[0];
-                    
+                    let comments = [];
+                    const { body_score_entry, fight_signs, air, temperature, floor, rest_areas, feed, management } = results.rows.raw()[0];
+
                     Object.keys(row).map((key) => {
-                        if(key.includes('_image') && row[key]){
+                        if (key.includes('_image') && row[key]) {
                             images.push(row[key]);
+                        }
+                        if (key.includes('_comments') && row[key]) {
+                            comments.push(row[key]);
                         }
                     });
 
-                    this.setState({ 
-                        length: 1, 
-                        graphdata: [body_score_entry,fight_signs,air,temperature,floor ,rest_areas ,feed ,management],
-                        images: images 
+                    this.setState({
+                        length: 1,
+                        graphdata: [body_score_entry, fight_signs, air, temperature, floor, rest_areas, feed, management],
+                        images: images,
+                        comments: comments
                     });
                 } else {
                     this.setState({ length: 0 });
@@ -46,6 +55,34 @@ class Gilt extends Component {
         })
     }
 
+    downloadReport = () => {
+        RNFetchBlob.config({
+            fileCache: true,
+            addAndroidDownloads: {
+                notification: true,
+                useDownloadManager: true,
+                // Title of download notification
+                title: 'gestation-assessor graph',
+                // File description (not notification description)
+                description: 'Graph report',
+                mime: 'application/pdf',
+                // Make the file scannable  by media scanner
+                mediaScannable: true,
+            }
+
+        })
+            .fetch('GET', "http://taskgrids.com/zinpro/gestation-assessor/report?evaluation_group_id=" + this.evaluationId)
+            .then((res) => {
+                Alert.alert(
+                    'File Status',
+                    'PDF Download Successfully',
+                    [
+                        { text: 'OK', onPress: () => { } },
+                    ],
+                    { cancelable: false },
+                );
+            })
+    }
 
     render() {
 
@@ -61,14 +98,14 @@ class Gilt extends Component {
                 text: 'Gestation Assessor'
             },
             xAxis: {
-                categories: ['BODY SCORE ENTRY','FIGHTSIGNS' , 'AIR','TEMPERATURE', 'FLOOR','RESTAREAS', 'FEED', 'MANAGEMENT']
+                categories: ['BODY SCORE ENTRY', 'FIGHTSIGNS', 'AIR', 'TEMPERATURE', 'FLOOR', 'RESTAREAS', 'FEED', 'MANAGEMENT']
             },
             yAxis: {
                 title: {
                     text: 'SCORE'
                 },
                 labels: {
-                  formatter: function () {
+                    formatter: function () {
                         return this.value;
                     }
                 }
@@ -101,8 +138,6 @@ class Gilt extends Component {
         return (
             <ScrollView style={container}>
 
-
-
                 {this.state.length > 0 && <ChartView style={{ height: 300 }} config={conf} />}
                 {this.state.length === 0 && <View style={{ marginTop: 100, marginHorizontal: '5%' }}>
                     <Text style={{ textAlign: 'center' }}>No Data Found !!</Text>
@@ -110,9 +145,19 @@ class Gilt extends Component {
 
                 <CardSilder>
                     {this.state.images.map((i, k) => {
-                        return  <Image style={{height: 170}} source={{uri : i}} key={k} />
-                    })}                   
-                 </CardSilder>
+                        return <Image style={{ height: 170 }} source={{ uri: i }} key={k} />
+                    })}
+                </CardSilder>
+
+                <CardSilder>
+                    {this.state.comments.map((i, k, v) => {
+                        return <View key={k}>
+                            <Text style={{ textAlign: 'center', padding: 30 }}>{i}</Text>
+                        </View>
+                    })}
+                </CardSilder>
+
+                <Button text={"Download"} onPress={this.downloadReport} />
 
             </ScrollView>
         );

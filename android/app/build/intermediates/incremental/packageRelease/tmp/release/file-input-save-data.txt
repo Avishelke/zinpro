@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sun May 26 19:38:18 IST 2019
+#Sat Jun 08 16:54:09 IST 2019
 60.set=NATIVE_RESOURCE
 52.set=NATIVE_RESOURCE
 53.base=D\:\\Projects\\React Native\\New folder\\New folder\\zinpro\\android\\app\\build\\intermediates\\merged_assets\\release\\mergeReleaseAssets\\out

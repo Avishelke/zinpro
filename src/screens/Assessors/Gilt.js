@@ -8,9 +8,7 @@ import { SHOW_ERROR_MESSAGE, SHOW_SUCCESS_MESSAGE } from '../../redux/actions';
 import Rate from "../../components/Rate";
 import ImagePicker from 'react-native-image-crop-picker';
 import { db } from '../../helpers/db'
-import ActionSheet from 'react-native-actionsheet'
-
-
+import ActionSheet from 'react-native-actionsheet';
 
 class Insemination extends Component {
 
@@ -273,7 +271,6 @@ class Insemination extends Component {
       });
     })
   }
-
 
   showActionSheet = (image_i) => {
     this.selectedImageIndex = image_i;

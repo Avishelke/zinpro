@@ -4,6 +4,7 @@ import { getValue } from "../../helpers/arrayhelper";
 // import RNFetchBlob from 'rn-fetch-blob'
 
 import AssessorsItem from "../../components/AssessorsItem";
+import { db } from '../../helpers/db';
 
 class List extends Component {
 
@@ -22,7 +23,7 @@ class List extends Component {
     { image: 'userguide', 'url': 'FeetFirst_UserGuide.pdf', label: 'HerdProfile', _label: 'Herd Profile', icon: 'ic_herd_census' },
     { image: 'userguide', 'url': 'FeetFirst_UserGuide.pdf', label: 'SowReplacement', _label: 'Sow Replacement', icon: 'ic_cull_data' },
     { image: 'userguide', 'url': 'FeetFirst_UserGuide.pdf', label: 'GiltBreakEven', _label: 'Gilt BreakEven', icon: 'ic_gilt_break_even' },
-    { image: 'userguide', 'url': 'FeetFirst_UserGuide.pdf', label: 'FarmInfo', _label: 'Farm Info', icon: 'ic_farm' },
+    // { image: 'userguide', 'url': 'FeetFirst_UserGuide.pdf', label: 'FarmInfo', _label: 'Farm Info', icon: 'ic_farm' },
 
     { image: 'userguide', 'url': 'FeetFirst_UserGuide.pdf', label: 'ZinproAcademy', _label: 'Zinpro Academy', icon: 'zinpro_data' }
 
@@ -31,7 +32,16 @@ class List extends Component {
   componentDidMount() {
     AsyncStorage.getItem("evaluationId").then((value) => {
       let id = JSON.parse(value)
-      this.setState({ evaluationId: id });
+      if (id) {
+        this.setState({ evaluationId: id });
+      } else {
+        db.transaction((tx) => {
+          tx.executeSql(`select * from evaluations where is_active= ? order by gc.id DESC limit 1`, [1], (tx, r) => {
+            const { id } = r.rows.item(0);
+            this.setState({ evaluationId: id });
+          })
+        })
+      }
     })
   }
 

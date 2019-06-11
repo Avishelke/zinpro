@@ -29,6 +29,6 @@ export default createStackNavigator({
         }),
     }
 }, {
-        initialRouteName: 'List',
+        initialRouteName: 'Info',
         mode: 'modal'
     });

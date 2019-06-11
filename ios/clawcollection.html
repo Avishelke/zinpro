@@ -6,23 +6,6 @@
     <link rel="stylesheet" href="./css/bootstrap.min.css">
 
     <style>
-        table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            width: 30%;
-        }
-
-        td,
-        th {
-            border: 1px solid #0a0909;
-            text-align: left;
-            padding: 8px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #fff;
-        }
-
         .parityBlock {
             width: 40px;
             height: 40px;
@@ -67,7 +50,7 @@
         }
 
         .col2 {
-            width: 100px;
+            width: 150px;
             float: left;
         }
 
@@ -123,38 +106,14 @@
 </head>
 
 <body style="margin-left: 10px; width: 800px;">
-    <h2 style="text-align:center;margin: 20px">Claw Collection Sheet</h2>
+    <!-- <h2 style="text-align:center;margin: 20px">Claw Evaluation Sheet</h2> -->
 
     <div style="margin: auto 10px">
         <div class="form-group">
             <label for="exampleFormControlSelect2">ID</label>
             <input class="form-control" id="id" style="width:300px;" />
         </div>
-        <table>
-            <tr>
-                <th>Parity</th>
-                <th>Sows</th>
 
-            </tr>
-            <tr>
-                <td> G</td>
-                <td>3</td>
-
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>2</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>5</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>4</td>
-            </tr>
-
-        </table>
         <div class="form-group"></div>
         <label for="exampleFormControlSelect2">PARITY</label>
         &nbsp;&nbsp;&nbsp;&nbsp; <br />
@@ -186,7 +145,7 @@
         </div>
 
         <div class="row">
-            <div class="col2 clawType">WL</div>
+            <div class="col2 clawType">Erosion</div>
             <div class="col5">
                 <div class="btn-group btn-group-justified leftScoreBlock">
                     <div class="parityBlockScore l s " data-id="1" data-value="1">1</div>
@@ -203,7 +162,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col2 clawType">CRK S/H</div>
+            <div class="col2 clawType">WL (white line)</div>
             <div class="col5">
                 <div class="btn-group btn-group-justified leftScoreBlock">
                     <div class="parityBlockScore l s " data-id="2" data-value="1">1</div>
@@ -220,7 +179,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col2 clawType">CRK H</div>
+            <div class="col2 clawType">H/S Crack</div>
             <div class="col5">
                 <div class="btn-group btn-group-justified leftScoreBlock">
                     <div class="parityBlockScore l s " data-id="3" data-value="1">1</div>
@@ -238,7 +197,7 @@
         </div>
 
         <div class="row">
-            <div class="col2 clawType">CRK V</div>
+            <div class="col2 clawType">V Crack</div>
             <div class="col5">
                 <div class="btn-group btn-group-justified leftScoreBlock">
                     <div class="parityBlockScore l s " data-id="4" data-value="1">1</div>
@@ -256,7 +215,7 @@
         </div>
 
         <div class="row">
-            <div class="col2 clawType">EROSION</div>
+            <div class="col2 clawType">H Crack</div>
             <div class="col5">
                 <div class="btn-group btn-group-justified leftScoreBlock">
                     <div class="parityBlockScore l s " data-id="5" data-value="1">1</div>
@@ -274,7 +233,7 @@
         </div>
 
         <div class="row">
-            <div class="col2 clawType">LONG DC</div>
+            <div class="col2 clawType">LONG CL</div>
             <div class="col5">
                 <div class="btn-group btn-group-justified leftScoreBlock">
                     <div class="parityBlockScore l s " data-id="6" data-value="1">1</div>
@@ -292,7 +251,7 @@
         </div>
 
         <div class="row">
-            <div class="col2 clawType">LONG CL</div>
+            <div class="col2 clawType">LONG DC</div>
             <div class="col5">
                 <div class="btn-group btn-group-justified leftScoreBlock">
                     <div class="parityBlockScore l s " data-id="7" data-value="1">1</div>
@@ -346,21 +305,38 @@
         var selectedID;
         var data = {};
 
+        var lastData;
+
         $('#save').on('click', function () {
             window.postMessage(JSON.stringify(data));
         });
 
         document.addEventListener("message", function (d) {
-            var ds = JSON.parse(d.data);
+            var temp = JSON.parse(d.data);
+            lastData = temp.data;
+            var ds = [];
+            var ID = temp.id ? parseInt(temp.id) + 1 : 1;
+
+            var elem = document.getElementById('id');
+            elem.value = ID;
+            selectedID = ID;
 
             ds.map(function (i) {
                 var index = parseInt(i[0]);
                 data[index] = i;
             });
 
+            data[selectedID] = [selectedID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+            $(".l").removeClass("selected");
+            $(".s").removeClass("selected");
+            $(".parity").removeClass("selected");
+            $(".parity-box div:nth-child(1)").addClass("selected");
+
         });
 
         $(".parity").click(function () {
+
             if (selectedID) {
                 $(".parity").removeClass("selected");
                 var value = parseInt($(this).attr("data-id"));

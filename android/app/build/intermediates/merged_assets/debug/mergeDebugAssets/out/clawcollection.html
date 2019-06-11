@@ -106,7 +106,7 @@
 </head>
 
 <body style="margin-left: 10px; width: 800px;">
-    <h2 style="text-align:center;margin: 20px">Claw Evaluation Sheet</h2>
+    <!-- <h2 style="text-align:center;margin: 20px">Claw Evaluation Sheet</h2> -->
 
     <div style="margin: auto 10px">
         <div class="form-group">
@@ -305,21 +305,38 @@
         var selectedID;
         var data = {};
 
+        var lastData;
+
         $('#save').on('click', function () {
             window.postMessage(JSON.stringify(data));
         });
 
         document.addEventListener("message", function (d) {
-            var ds = JSON.parse(d.data);
+            var temp = JSON.parse(d.data);
+            lastData = temp.data;
+            var ds = [];
+            var ID = temp.id ? parseInt(temp.id) + 1 : 1;
+
+            var elem = document.getElementById('id');
+            elem.value = ID;
+            selectedID = ID;
 
             ds.map(function (i) {
                 var index = parseInt(i[0]);
                 data[index] = i;
             });
 
+            data[selectedID] = [selectedID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+            $(".l").removeClass("selected");
+            $(".s").removeClass("selected");
+            $(".parity").removeClass("selected");
+            $(".parity-box div:nth-child(1)").addClass("selected");
+
         });
 
         $(".parity").click(function () {
+
             if (selectedID) {
                 $(".parity").removeClass("selected");
                 var value = parseInt($(this).attr("data-id"));
