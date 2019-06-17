@@ -31,7 +31,7 @@ class EvaluationForm extends Component {
         tx.executeSql(`SELECT * FROM evaluations where id = ?`, [id], (tx, results) => {
           let row = results.rows.item(0);
           // setTimeout(() => {
-            this.setState({ ...row, ...{ is_sync: 0 } })
+          this.setState({ ...row, ...{ is_sync: 0 } })
           // }, 1000)
         })
       })

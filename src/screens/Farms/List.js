@@ -60,8 +60,30 @@ class FarmList extends Component {
         {
           text: 'OK', onPress: () => {
             db.transaction((tx) => {
-              tx.executeSql('update farms set is_active=?, is_sync=?  where id = ?', [0, 0, id], () => {
+              tx.executeSql('update farms set is_active=?, is_sync=?  where id = ?', [0, 0, id], (tx, res) => {
                 this.getAllFarms();
+                tx.executeSql('select * evaluations where farm_id = ?', [id], (tx, row) => {
+                  var evaluationId = row.rows.item(0);
+                  tx.executeSql('update evaluations set is_active=?, is_sync=?  where farm_id = ?', [0, 0, id], (tx, results) => {
+                    tx.executeSql('update claw_collection set is_active=?, is_sync=?  where evaluation_group_id = ?', [0, 0, evaluationId], (tx, results) => {
+                      tx.executeSql('update cull_data set is_active=?, is_sync=?  where evaluation_group_id = ?', [0, 0, evaluationId], (tx, results) => {
+                        tx.executeSql('update gestation_assessor set is_active=?, is_sync=?  where evaluation_group_id = ?', [0, 0, evaluationId], (tx, results) => {
+                          tx.executeSql('update gilt_assessor set is_active=?, is_sync=?  where evaluation_group_id = ?', [0, 0, evaluationId], (tx, results) => {
+                            tx.executeSql('update gilt_break_even set is_active=?, is_sync=?  where evaluation_group_id = ?', [0, 0, evaluationId], (tx, results) => {
+                              tx.executeSql('update herd_census set is_active=?, is_sync=?  where evaluation_group_id = ?', [0, 0, evaluationId], (tx, results) => {
+                                tx.executeSql('update insemination_assessor set is_active=?, is_sync=?  where evaluation_group_id = ?', [0, 0, evaluationId], (tx, results) => {
+                                  tx.executeSql('update lactation_assessor set is_active=?, is_sync=?  where evaluation_group_id = ?', [0, 0, evaluationId], (tx, results) => {
+                                    this.props.syncData();
+                                  })
+                                })
+                              })
+                            })
+                          })
+                        })
+                      })
+                    })
+                  })
+                })
                 this.props.syncData();
               });
             })

@@ -128,6 +128,16 @@
             <div class="parityBlock parity" data-id="6">6</div>
             <div class="parityBlock parity" data-id="7">7+</div>
         </div>
+        <div>
+            <div class="parityBlock" id="g0">0</div>
+            <div class="parityBlock" id="g1">0</div>
+            <div class="parityBlock" id="g2">0</div>
+            <div class="parityBlock" id="g3">0</div>
+            <div class="parityBlock" id="g4">0</div>
+            <div class="parityBlock" id="g5">0</div>
+            <div class="parityBlock" id="g6">0</div>
+            <div class="parityBlock" id="g7">0</div>
+        </div>
     </div>
     <div style="margin: 10px;width: 300px">
         <button type="button" class="btn btn-primary btn-block" id="no-lesion">
@@ -141,7 +151,6 @@
         <div class="row">
             <div class="col2">&nbsp;</div>
             <div class="col5 tablePanel">LEFT</div>
-            <div class="col5 tablePanel">RIGHT</div>
         </div>
 
         <div class="row">
@@ -151,13 +160,6 @@
                     <div class="parityBlockScore l s " data-id="1" data-value="1">1</div>
                     <div class="parityBlockScore l s " data-id="1" data-value="2">2</div>
                     <div class="parityBlockScore l s " data-id="1" data-value="3">3</div>
-                </div>
-            </div>
-            <div class="col5">
-                <div class="btn-group btn-group-justified rightScoreBlock">
-                    <div class="parityBlockScore r s" data-id="1" data-value="1">1</div>
-                    <div class="parityBlockScore r s" data-id="1" data-value="2">2</div>
-                    <div class="parityBlockScore r s" data-id="1" data-value="3">3</div>
                 </div>
             </div>
         </div>
@@ -170,13 +172,6 @@
                     <div class="parityBlockScore l s " data-id="2" data-value="3">3</div>
                 </div>
             </div>
-            <div class="col5">
-                <div class="btn-group btn-group-justified rightScoreBlock">
-                    <div class="parityBlockScore r s" data-id="2" data-value="1">1</div>
-                    <div class="parityBlockScore r s" data-id="2" data-value="2">2</div>
-                    <div class="parityBlockScore r s" data-id="2" data-value="3">3</div>
-                </div>
-            </div>
         </div>
         <div class="row">
             <div class="col2 clawType">H/S Crack</div>
@@ -185,13 +180,6 @@
                     <div class="parityBlockScore l s " data-id="3" data-value="1">1</div>
                     <div class="parityBlockScore l s " data-id="3" data-value="2">2</div>
                     <div class="parityBlockScore l s " data-id="3" data-value="3">3</div>
-                </div>
-            </div>
-            <div class="col5">
-                <div class="btn-group btn-group-justified rightScoreBlock">
-                    <div class="parityBlockScore r s" data-id="3" data-value="1">1</div>
-                    <div class="parityBlockScore r s" data-id="3" data-value="2">2</div>
-                    <div class="parityBlockScore r s" data-id="3" data-value="3">3</div>
                 </div>
             </div>
         </div>
@@ -205,13 +193,6 @@
                     <div class="parityBlockScore l s " data-id="4" data-value="3">3</div>
                 </div>
             </div>
-            <div class="col5">
-                <div class="btn-group btn-group-justified rightScoreBlock">
-                    <div class="parityBlockScore r s" data-id="4" data-value="1">1</div>
-                    <div class="parityBlockScore r s" data-id="4" data-value="2">2</div>
-                    <div class="parityBlockScore r s" data-id="4" data-value="3">3</div>
-                </div>
-            </div>
         </div>
 
         <div class="row">
@@ -221,13 +202,6 @@
                     <div class="parityBlockScore l s " data-id="5" data-value="1">1</div>
                     <div class="parityBlockScore l s " data-id="5" data-value="2">2</div>
                     <div class="parityBlockScore l s " data-id="5" data-value="3">3</div>
-                </div>
-            </div>
-            <div class="col5">
-                <div class="btn-group btn-group-justified rightScoreBlock">
-                    <div class="parityBlockScore r s" data-id="5" data-value="1">1</div>
-                    <div class="parityBlockScore r s" data-id="5" data-value="2">2</div>
-                    <div class="parityBlockScore r s" data-id="5" data-value="3">3</div>
                 </div>
             </div>
         </div>
@@ -241,13 +215,6 @@
                     <div class="parityBlockScore l s " data-id="6" data-value="3">3</div>
                 </div>
             </div>
-            <div class="col5">
-                <div class="btn-group btn-group-justified rightScoreBlock">
-                    <div class="parityBlockScore r s" data-id="6" data-value="1">1</div>
-                    <div class="parityBlockScore r s" data-id="6" data-value="2">2</div>
-                    <div class="parityBlockScore r s" data-id="6" data-value="3">3</div>
-                </div>
-            </div>
         </div>
 
         <div class="row">
@@ -259,6 +226,81 @@
                     <div class="parityBlockScore l s " data-id="7" data-value="3">3</div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="container" style="width: 800px;">
+        <div class="row">
+            <div class="col2">&nbsp;</div>
+            <div class="col5 tablePanel">RIGHT</div>
+        </div>
+
+        <div class="row">
+            <div class="col2 clawType">Erosion</div>
+            <div class="col5">
+                <div class="btn-group btn-group-justified rightScoreBlock">
+                    <div class="parityBlockScore r s" data-id="1" data-value="1">1</div>
+                    <div class="parityBlockScore r s" data-id="1" data-value="2">2</div>
+                    <div class="parityBlockScore r s" data-id="1" data-value="3">3</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col2 clawType">WL (white line)</div>
+            <div class="col5">
+                <div class="btn-group btn-group-justified rightScoreBlock">
+                    <div class="parityBlockScore r s" data-id="2" data-value="1">1</div>
+                    <div class="parityBlockScore r s" data-id="2" data-value="2">2</div>
+                    <div class="parityBlockScore r s" data-id="2" data-value="3">3</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col2 clawType">H/S Crack</div>
+            <div class="col5">
+                <div class="btn-group btn-group-justified rightScoreBlock">
+                    <div class="parityBlockScore r s" data-id="3" data-value="1">1</div>
+                    <div class="parityBlockScore r s" data-id="3" data-value="2">2</div>
+                    <div class="parityBlockScore r s" data-id="3" data-value="3">3</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col2 clawType">V Crack</div>
+            <div class="col5">
+                <div class="btn-group btn-group-justified rightScoreBlock">
+                    <div class="parityBlockScore r s" data-id="4" data-value="1">1</div>
+                    <div class="parityBlockScore r s" data-id="4" data-value="2">2</div>
+                    <div class="parityBlockScore r s" data-id="4" data-value="3">3</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col2 clawType">H Crack</div>
+            <div class="col5">
+                <div class="btn-group btn-group-justified rightScoreBlock">
+                    <div class="parityBlockScore r s" data-id="5" data-value="1">1</div>
+                    <div class="parityBlockScore r s" data-id="5" data-value="2">2</div>
+                    <div class="parityBlockScore r s" data-id="5" data-value="3">3</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col2 clawType">LONG CL</div>
+            <div class="col5">
+                <div class="btn-group btn-group-justified rightScoreBlock">
+                    <div class="parityBlockScore r s" data-id="6" data-value="1">1</div>
+                    <div class="parityBlockScore r s" data-id="6" data-value="2">2</div>
+                    <div class="parityBlockScore r s" data-id="6" data-value="3">3</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col2 clawType">LONG DC</div>
             <div class="col5">
                 <div class="btn-group btn-group-justified rightScoreBlock">
                     <div class="parityBlockScore r s" data-id="7" data-value="1">1</div>

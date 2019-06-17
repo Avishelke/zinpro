@@ -53,6 +53,30 @@ class ClawCollection extends Component {
 
         if (length > 0) {
           const { data, id, image, comment } = r.rows.item(0);
+          var parityData = [];
+
+          tx.executeSql(`select * from claw_collection where is_active=?`, [1], (tx, res) => {
+            let { length } = res.rows;
+            for (let index = 0; index < length; index++) {
+              if (r.rows.item(index)) {
+                parityData.push(r.rows.item(index).data);
+              }
+            }
+
+            // var arr = [0, 0, 0, 0, 0, 0, 0, 0];
+            // for (var i = 0; i < arr.length; i++) {
+            //   for (var j = 0; j < parityData.length; j++) {
+            //     arr[i] = arr[i] + parityData[i][1];
+            //   }
+            // }
+
+            setTimeout(() => {
+              console.log(parityData);
+              setTimeout(() => {
+                // console.log(arr);
+              }, 500);
+            }, 500);
+          });
 
           this.setState({ id, data }, () => {
             setTimeout(() => {
@@ -73,13 +97,13 @@ class ClawCollection extends Component {
 
     let query = '';
     let args = []
-    if (this.state.id === false) {
+    // if (this.state.id === false) {
       query = `INSERT INTO claw_collection (data,date,is_sync,evaluation_group_id, is_active,image,comment) VALUES (?,?,?,?,?,?,?)`;
       args = [JSON.stringify(this.state.data), this.date, 0, this.evaluation_group_id, 1, this.state.image, this.state.comment];
-    } else {
-      query = `update claw_collection set data=?, is_sync=? where id=?`;
-      args = [JSON.stringify(this.state.data), 0, this.state.id]
-    }
+    // } else {
+    //   query = `update claw_collection set data=?, is_sync=? where id=?`;
+    //   args = [JSON.stringify(this.state.data), 0, this.state.id]
+    // }
 
     db.transaction((tx) => {
       tx.executeSql(query, args, (tx, r) => {
@@ -147,6 +171,11 @@ class ClawCollection extends Component {
   render() {
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
+        <WebView
+          source={{ uri: isAndroid ? 'file:///android_asset/clawcollection.html' : './clawcollection.html' }}
+          ref={(webView) => this.webView = webView}
+          onMessage={this.onMessage}
+          scalesPageToFit />
         <ActionSheet
           ref={o => this.ActionSheet = o}
           title={'Which one do you like ?'}
@@ -168,11 +197,6 @@ class ClawCollection extends Component {
           numberOfLines={2}
           onChangeText={(v) => { this.setState({ comment: v }) }}
         />
-        <WebView
-          source={{ uri: isAndroid ? 'file:///android_asset/clawcollection.html' : './clawcollection.html' }}
-          ref={(webView) => this.webView = webView}
-          onMessage={this.onMessage}
-          scalesPageToFit />
       </View>
     );
   }
